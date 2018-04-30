@@ -1,0 +1,60 @@
+; 1,2,3,4,5,6
+; 2,1,4,3,6,5
+
+ExitProcess PROTO
+WriteInt64 PROTO
+Crlf PROTO
+
+.data
+myArray QWORD 1d,2d,3d,4d,5d,6d
+
+.code
+main proc
+	MOV rcx, 6
+	MOV rbx, 0
+	MOV r12, 8
+	STARTLOOP:
+		MOV rax, rbx
+		MUL r12
+		MOV r11, rax
+		MOV rax, myArray[r11]
+
+		CALL WriteInt64
+		INC rbx
+	LOOP STARTLOOP
+
+	CALL Crlf
+
+	MOV rcx, 3
+	MOV rbx, 0
+	SWAPLOOP:
+			MOV rax, rbx
+			MUL r12
+			MOV r11, rax ;r11 is first index offset
+			MOV rbp, r11
+			ADD rbp, 8 ;rbp is the second index offset
+
+			;swap
+			MOV r14, myArray[r11]	;store the first value in r14
+			MOV r15, myArray[rbp]	;store the second value in r15
+			MOV myArray[r11], r15
+			MOV myArray[rbp], r14
+			
+			ADD rbx, 2
+	LOOP SWAPLOOP
+
+	MOV rcx, 6
+	MOV rbx, 0
+	MOV r12, 8
+	STARTLOOP2:
+		MOV rax, rbx
+		MUL r12
+		MOV r11, rax
+		MOV rax, myArray[r11]
+
+		CALL WriteInt64
+		INC rbx
+	LOOP STARTLOOP2
+	call ExitProcess
+main endp
+end
